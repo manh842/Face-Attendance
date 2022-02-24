@@ -36,49 +36,24 @@
     ></script>
     <style>
       body {
+        overflow-x: hidden;
         margin: 0;
         padding: 0;
         width: 100vw;
         height: 100vh;
       }
-
-      canvas {
-        position: absolute;
-
-        left: 15px;
-      }
     </style>
   </head>
   <body>
-    <div class="d-flex w-100">
-      <div class="col-sm-6" id="canvas" height="360">
-        <video id="video" width="520" height="400" autoplay muted></video>
-      </div>
-      <div class="col-sm-6">
-        <table id="table">
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Tên</th>
-            </tr>
-          </thead>
-          <tbody id="body-table">
-            <!-- <tr>
-              <th scope="row">1</th>
-              <td>Mark</td>
-            </tr>
-            <tr>
-              <th scope="row">2</th>
-              <td>Jacob</td>
-            </tr>
-            <tr>
-              <th scope="row">3</th>
-              <td>Larry</td>
-            </tr> -->
-          </tbody>
-        </table>
-      </div>
-    </div>
+    <ul class="nav">
+      <li class="nav-item">
+        <a class="nav-link active" href="addStudent.html">Thêm sinh viên</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="attendance.html">Điểm danh</a>
+      </li>
+    </ul>
+    <img src="./image.jpg" alt="" width="100%" style="" />
   </body>
   <script
     type="text/javascript"
