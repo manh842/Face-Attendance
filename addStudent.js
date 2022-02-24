@@ -13,9 +13,9 @@ const pickerOpts = {
       description: "TXT",
       accept: {
         "text/plain": [".txt"],
-      }
-    }
-  ]
+      },
+    },
+  ],
 };
 let image_data = [];
 let canvas;
@@ -97,7 +97,7 @@ video.addEventListener("play", () => {
         .drawImage(video, 0, 0, canvas_data.width, canvas_data.height);
       image_number++;
       image_data.push(canvas_data);
-      if (image_number > 50) {
+      if (image_number > 200) {
         Toastify({
           text: "Tải xong model nhận diện! Bạn có thể  nhận dữ liệu ảnh",
         }).showToast();
@@ -142,12 +142,11 @@ async function loadTrainingData() {
     text: `Training xong data của ${label}!`,
   }).showToast();
   let getFileDataTrain = await logFileText("data-train.txt");
-  let dataTrainArr = getFileDataTrain !== ''
-    ? JSON.parse(getFileDataTrain).dataTrain
-    : [];
+  let dataTrainArr =
+    getFileDataTrain !== "" ? JSON.parse(getFileDataTrain).dataTrain : [];
   dataTrain = {
-    dataTrain: [...dataTrainArr, ...faceDescriptors]
-  }
+    dataTrain: [...dataTrainArr, ...faceDescriptors],
+  };
 }
 
 save.addEventListener("click", async function () {

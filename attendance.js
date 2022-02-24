@@ -59,14 +59,17 @@ async function loadTrainingData() {
     ? JSON.parse(getFileDataTrain).dataTrain
     : [];
   dataTrainArr.forEach((i) => {
-    const Arr32 = i._descriptors.map((item) => {
-      return new Float32Array(Object.values(item));
-    });
-    faceDescriptors.push(new faceapi.LabeledFaceDescriptors(i._label, Arr32));
+    let label = JSON.parse(i._label);
+    if (label.class === class_sv.value) {
+      const Arr32 = i._descriptors.map((item) => {
+        return new Float32Array(Object.values(item));
+      });
+      faceDescriptors.push(new faceapi.LabeledFaceDescriptors(i._label, Arr32));
+    }
   });
   attendance = [];
   faceDescriptors.forEach((i, index) => {
-    const label = JSON.parse(i.label);
+    let label = JSON.parse(i.label);
     if (label.class === class_sv.value) {
       return attendance.push({
         name: label.name,
