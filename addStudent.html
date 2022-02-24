@@ -43,7 +43,7 @@
     autoplay
     muted></video>
   <div style="position: absolute; top: 100px; left: 100px;">
-    <form>
+    <form style="width: 450px;">
       <div class="form-group">
         <label for="id"
           class="col-form-label">Mã SV:</label>
@@ -66,16 +66,15 @@
         </select>
       </div>
     </form>
-    <button id="stop-record"
-      type="button"
-      class="btn btn-outline-danger mr-2">Nhận dữ liệu</button>
     <button id="start-record"
       type="button"
       class="btn btn-outline-danger mr-2">Mở camera</button>
-    <input type="file"
-      name="file"
-      id="file-input" />
-    <div id="container"></div>
+    <button id="stop-record"
+      type="button"
+      class="btn btn-outline-danger mr-2">Nhận dữ liệu</button>
+    <button id="save"
+      type="button"
+      class="btn btn-outline-danger mr-2">Lưu dữ liệu</button>
   </div>
   <script type="text/javascript"
     src="https://cdn.jsdelivr.net/npm/toastify-js"></script>

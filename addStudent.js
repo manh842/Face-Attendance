@@ -6,12 +6,22 @@ const name_sv = document.getElementById("name");
 const class_sv = document.getElementById("class");
 let stop_button = document.querySelector("#stop-record");
 let start_button = document.querySelector("#start-record");
-const container = document.querySelector("#container");
-const fileInput = document.querySelector("#file-input");
+let save = document.querySelector("#save");
+const pickerOpts = {
+  types: [
+    {
+      description: "TXT",
+      accept: {
+        "text/plain": [".txt"],
+      }
+    }
+  ]
+};
 let image_data = [];
 let canvas;
 let interval;
-let faceMatcher;
+let faceDescriptors = [];
+let dataTrain;
 
 start_button.addEventListener("click", function () {
   image_data = [];
@@ -100,30 +110,15 @@ video.addEventListener("play", () => {
   }, 100);
 });
 
-function dataURLtoFile(dataUrl, filename) {
-  let arr = dataUrl.split(","),
-    mime = arr[0].match(/:(.*?);/)[1],
-    bstr = atob(arr[1]),
-    n = bstr.length,
-    u8arr = new Uint8Array(n);
-  while (n--) {
-    u8arr[n] = bstr.charCodeAt(n);
-  }
-  return new File([u8arr], filename, { type: mime });
-}
-
-const pickerOpts = {
-  types: [
-    {
-      description: "TXT",
-      accept: {
-        "text/plain": [".txt"],
-      },
-    },
-  ],
+const logFileText = async (file) => {
+  const response = await fetch(file);
+  const text = await response.text();
+  return text;
 };
 
 async function loadTrainingData() {
+  faceDescriptors = [];
+  dataTrain = {};
   Toastify({
     text: "Chờ xíu!",
   }).showToast();
@@ -132,7 +127,6 @@ async function loadTrainingData() {
     name: name_sv.value,
     class: class_sv.value,
   });
-  const faceDescriptors = [];
   const descriptors = [];
   for (let i = 0; i < image_data.length; i++) {
     const detection = await faceapi
@@ -144,55 +138,21 @@ async function loadTrainingData() {
     }
   }
   faceDescriptors.push(new faceapi.LabeledFaceDescriptors(label, descriptors));
-  console.log(faceDescriptors);
   Toastify({
     text: `Training xong data của ${label}!`,
   }).showToast();
-  let [fileHandle] = await window.showOpenFilePicker(pickerOpts);
-  const fileData = await fileHandle.getFile();
-  const textData = await fileData.text();
-  const data = [
-    ...faceDescriptors,
-    ...(textData ? JSON.parse(textData).dataTrain : []),
-  ];
-  console.log(data);
-  const dataTrain = {
-    dataTrain: data,
-    faceMatcher: new faceapi.FaceMatcher(data, 0.6),
-  };
-  let stream = await fileHandle.createWritable();
-  await stream.write(dataTrain);
-  await stream.close();
+  let getFileDataTrain = await logFileText("data-train.txt");
+  let dataTrainArr = getFileDataTrain !== ''
+    ? JSON.parse(getFileDataTrain).dataTrain
+    : [];
+  dataTrain = {
+    dataTrain: [...dataTrainArr, ...faceDescriptors]
+  }
 }
 
-fileInput.addEventListener("change", async () => {
-  const files = fileInput.files;
-  const image = await faceapi.bufferToImage(files[0]);
-  const canvas = faceapi.createCanvasFromMedia(image);
-
-  container.innerHTML = "";
-  container.append(image);
-  container.append(canvas);
-
-  const size = {
-    width: image.width,
-    height: image.height,
-  };
-
-  faceapi.matchDimensions(canvas, size);
-
-  const detections = await faceapi
-    .detectAllFaces(image)
-    .withFaceLandmarks()
-    .withFaceDescriptors();
-  const resizedDetections = faceapi.resizeResults(detections, size);
-
-  // faceapi.draw.drawDetections(canvas, resizedDetections)
-
-  for (const detection of resizedDetections) {
-    const drawBox = new faceapi.draw.DrawBox(detection.detection.box, {
-      label: faceMatcher.findBestMatch(detection.descriptor).toString(),
-    });
-    drawBox.draw(canvas);
-  }
+save.addEventListener("click", async function () {
+  const newHandle = await window.showSaveFilePicker(pickerOpts);
+  let stream = await newHandle.createWritable();
+  await stream.write({ type: "write", data: JSON.stringify(dataTrain) });
+  await stream.close();
 });
