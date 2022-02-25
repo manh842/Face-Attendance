@@ -31,7 +31,7 @@ async function init() {
 init();
 start.addEventListener("click", async function () {
   let trainingData = await loadTrainingData();
-  faceMatcher = new faceapi.FaceMatcher(trainingData, 0.6);
+  faceMatcher = new faceapi.FaceMatcher(trainingData, 0.56);
   startVideo();
 });
 stop.addEventListener("click", async function () {
